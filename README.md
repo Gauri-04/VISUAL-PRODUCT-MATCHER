@@ -17,7 +17,7 @@ Powered by **TensorFlow.js (MobileNet)**, it runs entirely in your browser — �
 ---
 
 🚀 Live Demo
-Deployed with **Vercel** 👉 [Visual Product Matcher](https://visual-product-matcher.vercel.app)  
+Deployed with **Vercel** 👉 [Visual Product Matcher](https://vercel.com/gauri-guptas-projects/visual-product-matcher)  
 
 ---
 

@@ -1,26 +1,44 @@
-# Visual Product Matcher
+🔍 Visual Product Matcher  
 
-A lightweight web application that finds visually similar products based on an uploaded image.  
-Built using **HTML, CSS, JavaScript, and TensorFlow.js (MobileNet)**, the app runs entirely in the browser — no backend required.  
+A sleek, responsive web app that helps you **find visually similar products** by simply uploading an image.  
+Powered by **TensorFlow.js (MobileNet)**, it runs entirely in your browser — ⚡ fast, private, and no backend required!  
 
-## Features
-- Upload image (file) or paste image URL  
-- Live preview of query image  
-- Finds similar products from a dataset using cosine similarity on image embeddings  
-- Filters: similarity threshold, category filter, sorting options  
-- Responsive, mobile-friendly UI with light/dark mode toggle  
-- Simple deployment on GitHub Pages / Netlify / Vercel  
+---
 
-## Demo Dataset
-The included dataset uses 50 placeholder product images (`picsum.photos`). Replace with your own product catalog for real-world usage.
+✨ Features
+- 📤 Upload an image or paste a URL  
+- 👀 Live image preview before searching  
+- 🧠 AI-powered similarity search with MobileNet embeddings  
+- 🎚 Adjustable similarity threshold  
+- 🗂 Filter by category & sort by score  
+- 📱 Fully responsive (mobile + desktop)  
+- 🎨 Clean, modern UI  
 
-## Deployment
-1. Push this repo to GitHub.  
-2. Enable GitHub Pages (Settings → Pages → Branch: `main`).  
-   - Your app will be live at `https://<username>.github.io/visual-product-matcher/`.  
-3. Alternatively, deploy directly on [Netlify](https://www.netlify.com) or [Vercel](https://vercel.com).  
+---
 
-## Approach (≤200 words)
-The goal was to create a responsive, production-quality demo with minimal setup. I chose **TensorFlow.js MobileNet embeddings** to compute feature vectors directly in the browser, avoiding the need for a backend or API. A small product dataset (50+ images with metadata) is stored locally in the code. When a user uploads or links an image, the model generates an embedding. Cosine similarity is then computed between the query embedding and pre-computed product embeddings to find matches. Results are filtered by similarity threshold, category, and sorting preferences.  
+🚀 Live Demo
+Deployed with **Vercel** 👉 [Visual Product Matcher](https://visual-product-matcher.vercel.app)  
 
-The UI is built with plain **HTML/CSS/JS**, optimized for responsiveness, with skeleton loading states, error handling, and a dark/light mode toggle for better UX. Deployment is simplified to a static HTML file, making it portable and easy to host on GitHub Pages or any free hosting service.  
+---
+
+📂 Dataset
+- Demo uses **placeholder product images** (`picsum.photos`).  
+- Swap in your own catalog via a `products.json` file for realistic results.  
+
+---
+
+🛠 Tech Stack
+- **Frontend**: HTML, CSS, JavaScript  
+- **AI Model**: TensorFlow.js (MobileNet)  
+- **Deployment**: Vercel  
+
+---
+
+📖 Approach
+This app extracts **image embeddings** using MobileNet directly in the browser.  
+Uploaded images are compared to pre-computed product embeddings using **cosine similarity**, then filtered & sorted based on user settings.  
+
+The focus was on **simplicity and usability**: responsive UI, error handling, clean design, and zero backend dependencies. Deployment was done via **Vercel**, ensuring instant access and auto-updates from GitHub.  
+
+---
+💡 *Tip: Replace the demo dataset with your own products to turn this into a real e-commerce visual search tool!*  

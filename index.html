@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visual Product Matcher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =============================
+       THEME VARIABLES
+       ============================= */
+    :root {
+      --bg: #f5f7fa; --card:#ffffff; --muted:#6b7280; --text:#1f2937; --brand:#2563eb; --accent:#9333ea; --ok:#16a34a;
+    }
+    [data-theme="dark"] {
+      --bg: #0b0d12; --card:#121622; --muted:#9ca3af; --text:#f3f4f6; --brand:#3b82f6; --accent:#a78bfa; --ok:#34d399;
+    }
+
+    /* =============================
+       GLOBAL STYLES
+       ============================= */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text); line-height:1.5; transition:background .3s,color .3s; }
+
+    /* =============================
+       HEADER
+       ============================= */
+    header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; padding:16px 24px; background:var(--brand); color:white; position:sticky; top:0; z-index:10; }
+    header .title { display:flex; align-items:center; gap:10px; font-size:1.2rem; font-weight:700; }
+    .badge { font-size:12px; background: var(--accent); padding:4px 10px; border-radius:999px; color:#fff; }
+    .theme-toggle { background:rgba(255,255,255,.2); border:none; border-radius:8px; padding:6px 12px; color:white; cursor:pointer; font-size:.85rem; }
+
+    /* =============================
+       LAYOUT
+       ============================= */
+    .container { max-width:1280px; margin:0 auto; padding:20px; }
+    .grid { display:grid; gap:20px; }
+    @media(min-width:900px){ .grid { grid-template-columns: 360px 1fr; } }
+
+    /* =============================
+       CARD STYLING
+       ============================= */
+    .card { background: var(--card); border-radius:16px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,.08); transition:.2s; }
+    .card:hover { box-shadow:0 6px 20px rgba(0,0,0,.12); }
+    h3 { font-size:1.1rem; margin-bottom:12px; }
+
+    /* =============================
+       FORM INPUTS
+       ============================= */
+    input[type=text], input[type=file], select, button { width:100%; border:none; border-radius:8px; padding:10px; font-size:.9rem; }
+    input[type=text], input[type=file], select { background:#f9fafb; color:var(--text); margin-bottom:10px; border:1px solid #d1d5db; }
+    [data-theme="dark"] input[type=text], [data-theme="dark"] input[type=file], [data-theme="dark"] select { background:#0e1220; border:1px solid rgba(255,255,255,.1); }
+    button { background: linear-gradient(135deg,var(--brand),var(--accent)); color:white; font-weight:600; cursor:pointer; transition:.2s; }
+    button:hover { opacity:.9; }
+
+    /* =============================
+       IMAGE PREVIEW
+       ============================= */
+    .preview { height:280px; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:12px; display:flex; justify-content:center; align-items:center; overflow:hidden; margin-top:10px; }
+    [data-theme="dark"] .preview { background:#0e1220; border:1px solid rgba(255,255,255,.1); }
+    .preview img { max-width:100%; max-height:100%; object-fit:contain; }
+
+    /* =============================
+       ERRORS & HINTS
+       ============================= */
+    .controls { display:flex; flex-direction:column; gap:10px; }
+    .error { color:#b91c1c; background:#fee2e2; border:1px solid #fca5a5; padding:10px; border-radius:8px; margin-top:8px; font-size:.85rem; }
+    [data-theme="dark"] .error { background:#1a0f15; border:1px solid rgba(255,0,76,.2); color:#ff8fab; }
+    .hint { font-size:.8rem; color:var(--muted); margin-top:6px; }
+
+    /* =============================
+       RESULTS GRID
+       ============================= */
+    .toolbar { display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .count { font-size:.85rem; color:var(--muted); }
+
+    .gridCards { display:grid; gap:16px; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); }
+    .cardItem { background:var(--card); border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; transition:transform .2s, box-shadow .2s; }
+    [data-theme="dark"] .cardItem { border:1px solid rgba(255,255,255,.1); }
+    .cardItem:hover { transform:translateY(-4px); box-shadow:0 6px 16px rgba(0,0,0,.08); }
+    .thumb { aspect-ratio:1/1; background:#f3f4f6; display:flex; justify-content:center; align-items:center; }
+    [data-theme="dark"] .thumb { background:#0a0d18; }
+    .thumb img { width:100%; height:100%; object-fit:cover; }
+    .meta { padding:10px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .name { font-weight:600; font-size:.9rem; }
+    .cat { font-size:.75rem; color:var(--muted); }
+    .score { font-size:.8rem; font-weight:700; color:var(--ok); }
+
+    /* =============================
+       FOOTER
+       ============================= */
+    footer { text-align:center; font-size:.8rem; color:var(--muted); margin-top:24px; padding:12px; }
+  </style>
+</head>
+<body>
+  <!-- =============================
+       HEADER
+       ============================= -->
+  <header>
+    <div class="title">🔍 Visual Product Matcher</div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button id="themeToggle" class="theme-toggle">🌙 Dark Mode</button>
+      <div class="badge">Demo Build</div>
+    </div>
+  </header>
+
+  <!-- =============================
+       MAIN CONTENT
+       ============================= -->
+  <div class="container">
+    <div class="grid">
+      <!-- Upload section -->
+      <section class="card">
+        <h3>Upload or paste an image URL</h3>
+        <div class="controls">
+          <input id="urlInput" type="text" placeholder="https://example.com/image.jpg" />
+          <button id="btnLoadUrl">Load</button>
+          <input id="fileInput" type="file" accept="image/*" />
+          <button id="btnClear">Clear</button>
+          <div class="preview" id="preview"><div class="hint">No image yet.</div></div>
+          <div id="errBox" class="error" style="display:none"></div>
+          <div class="hint" id="modelStatus">Loading model…</div>
+        </div>
+      </section>
+
+      <!-- Results section -->
+      <section class="card">
+        <div class="toolbar">
+          <div style="flex:1; min-width:200px;">
+            <label for="simRange">Similarity threshold: <span id="simVal">0.50</span></label>
+            <input id="simRange" type="range" min="0" max="0.95" step="0.01" value="0.50" />
+          </div>
+          <select id="catFilter"><option value="all">All categories</option></select>
+          <select id="sortBy">
+            <option value="best">Sort: Best match</option>
+            <option value="high">Score: High → Low</option>
+            <option value="low">Score: Low → High</option>
+          </select>
+        </div>
+        <div id="count" class="count">0 matches</div>
+        <div id="cards" class="gridCards"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- =============================
+       FOOTER
+       ============================= -->
+  <footer>Tip: Replace the dataset with your own product images for realistic matching results.</footer>
+
+  <!-- =============================
+       LIBRARIES
+       ============================= -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.21.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>
+
+  <script>
+    // =============================
+    // PRODUCT DATASET (demo using picsum)
+    // =============================
+    const CATEGORIES=["Shoes","Bags","Watches","Jackets","Accessories"];
+    const PRODUCT_IDS=[11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60];
+    const PRODUCTS=PRODUCT_IDS.map((id,i)=>({id:String(id),name:`${CATEGORIES[i%CATEGORIES.length]} #${i+1}`,category:CATEGORIES[i%CATEGORIES.length],image:`https://picsum.photos/id/${id}/600/600`}));
+
+    // =============================
+    // STATE & HELPERS
+    // =============================
+    let model=null,queryEmbedding=null; const productEmbeds=new Map();
+    const el=id=>document.getElementById(id);
+
+    async function loadImage(url){return new Promise((res,rej)=>{const img=new Image();img.crossOrigin='anonymous';img.onload=()=>res(img);img.onerror=()=>rej();img.src=url+(url.includes('?')?'&':'?')+'cb='+Date.now();});}
+    async function embedImage(img){return tf.tidy(()=>model.infer(img,{embedding:true}).squeeze());}
+    function cosineSim(a,b){const sim=tf.tidy(()=>tf.div(tf.sum(tf.mul(a,b)),tf.mul(tf.norm(a),tf.norm(b))));const v=sim.dataSync()[0];sim.dispose();return v;}
+    function showError(msg){el('errBox').textContent=msg;el('errBox').style.display='block';}
+    function clearError(){el('errBox').style.display='none';}
+
+    // =============================
+    // RENDERING RESULTS
+    // =============================
+    function renderCards(items){const cards=el('cards');cards.innerHTML='';if(!items.length){el('count').textContent='0 matches';cards.innerHTML='<div class="hint">No matches.</div>';return;}el('count').textContent=`${items.length} matches`;items.forEach(({product,score})=>{const c=document.createElement('div');c.className='cardItem';c.innerHTML=`<div class='thumb'><img src='${product.image}' alt='${product.name}'/></div><div class='meta'><div><div class='name'>${product.name}</div><div class='cat'>${product.category}</div></div><div class='score'>${score.toFixed(2)}</div></div>`;cards.appendChild(c);});}
+
+    // =============================
+    // SEARCH PIPELINE
+    // =============================
+    async function runSearch(){if(!queryEmbedding)return;clearError();const threshold=parseFloat(el('simRange').value);const cat=el('catFilter').value;const prods=PRODUCTS.filter(p=>cat==='all'||p.category===cat);
+      // Precompute embeddings for products if missing
+      await Promise.all(prods.map(async p=>{if(!productEmbeds.has(p.id)){try{const img=await loadImage(p.image);const emb=await embedImage(img);productEmbeds.set(p.id,emb);}catch{}}}));
+      // Calculate similarity scores
+      const scored=[];for(const p of prods){const emb=productEmbeds.get(p.id);if(!emb)continue;const s=cosineSim(queryEmbedding,emb);if(s>=threshold)scored.push({product:p,score:s});}
+      // Sort and render
+      scored.sort((a,b)=>el('sortBy').value==='low'?a.score-b.score:b.score-a.score);renderCards(scored);}
+
+    // =============================
+    // IMAGE HANDLING
+    // =============================
+    async function handleImage(img){clearError();if(queryEmbedding){queryEmbedding.dispose();queryEmbedding=null;}queryEmbedding=await embedImage(img);await runSearch();}
+    el('btnLoadUrl').onclick=async()=>{const url=el('urlInput').value.trim();if(!url)return;try{const img=await loadImage(url);el('preview').innerHTML='';el('preview').appendChild(img);await handleImage(img);}catch{showError('Invalid URL');}};
+    el('fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{el('preview').innerHTML='';el('preview').appendChild(img);handleImage(img);};img.src=r.result;};r.readAsDataURL(f);};
+    el('btnClear').onclick=()=>{el('preview').innerHTML='<div class="hint">No image yet.</div>';el('urlInput').value='';el('fileInput').value='';if(queryEmbedding){queryEmbedding.dispose();queryEmbedding=null;}el('cards').innerHTML='';el('count').textContent='0 matches';clearError();};
+
+    // =============================
+    // FILTERS & SLIDERS
+    // =============================
+    el('simRange').oninput=()=>el('simVal').textContent=parseFloat(el('simRange').value).toFixed(2);
+    el('simRange').onchange=runSearch;el('catFilter').onchange=runSearch;el('sortBy').onchange=runSearch;
+
+    // =============================
+    // MODEL LOADING
+    // =============================
+    (async()=>{el('modelStatus').textContent='Loading model…';try{model=await mobilenet.load({version:2,alpha:1.0});el('modelStatus').textContent='Model ready';}catch{showError('Model failed to load');el('modelStatus').textContent='Error';}})();
+
+    // =============================
+    // THEME TOGGLE
+    // =============================
+    const themeBtn=el('themeToggle');
+    themeBtn.onclick=()=>{
+      if(document.body.getAttribute('data-theme')==='dark'){
+        document.body.removeAttribute('data-theme');
+        themeBtn.textContent='🌙 Dark Mode';
+      } else {
+        document.body.setAttribute('data-theme','dark');
+        themeBtn.textContent='☀️ Light Mode';
+      }
+    };
+  </script>
+</body>
+</html>
